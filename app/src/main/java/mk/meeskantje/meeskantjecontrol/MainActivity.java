@@ -3,7 +3,6 @@ package mk.meeskantje.meeskantjecontrol;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -23,7 +22,6 @@ public class MainActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if (action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
-
                 final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, bluetoothAdapter.ERROR);
 
                 switch (state) {
@@ -44,6 +42,32 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    private final BroadcastReceiver broadcastReceiverSec = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final String action = intent.getAction();
+
+            if (action.equals(BluetoothAdapter.ACTION_SCAN_MODE_CHANGED)) {
+                int mode = intent.getIntExtra(BluetoothAdapter.EXTRA_SCAN_MODE, BluetoothAdapter.ERROR);
+
+                switch (mode) {
+                    case BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE:
+                        Log.d(TAG, "onReceiveSec: Discoverability Enabled.");
+                        break;
+                    case BluetoothAdapter.SCAN_MODE_CONNECTABLE:
+                        Log.d(TAG, "onReceiveSec: Able to receive connections.");
+                        break;
+                    case BluetoothAdapter.STATE_CONNECTING:
+                        Log.d(TAG, "onReceiveSec: Connecting...");
+                        break;
+                    case BluetoothAdapter.STATE_CONNECTED:
+                        Log.d(TAG, "onReceiveSec: Connected.");
+                        break;
+                }
+            }
+        }
+    };
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -56,8 +80,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Button onOffButton = findViewById(R.id.onOffButton);
+        Button discoverable = findViewById(R.id.discover);
 
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
 
 
         onOffButton.setOnClickListener(new View.OnClickListener() {
@@ -85,5 +111,16 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Log.d(TAG, "NO BLUETOOTH AVAILABLE");
         }
+    }
+
+    public void btnEnableDisable_Discoverable(View view) {
+        Log.d(TAG, "Device discoverable for 300 seconds.");
+
+        Intent discoverIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+        discoverIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
+        startActivity(discoverIntent);
+
+        IntentFilter intentFilter = new IntentFilter(bluetoothAdapter.ACTION_SCAN_MODE_CHANGED);
+        registerReceiver(broadcastReceiverSec, intentFilter);
     }
 }
