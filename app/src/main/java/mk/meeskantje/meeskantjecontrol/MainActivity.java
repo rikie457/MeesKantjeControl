@@ -2,20 +2,32 @@ package mk.meeskantje.meeskantjecontrol;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ListView;
+
+import java.util.ArrayList;
+
+import mk.meeskantje.meeskantjecontrol.data.bluetooth.DeviceListAdapter;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
+    public ArrayList<BluetoothDevice> devices = new ArrayList<>();
+    public DeviceListAdapter deviceListAdapter;
 
     BluetoothAdapter bluetoothAdapter;
+
+    ListView deviceList;
 
     private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
@@ -68,6 +80,21 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    private BroadcastReceiver broadcastReceiverThird = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final String action = intent.getAction();
+
+            if (action.equals(BluetoothDevice.ACTION_FOUND)) {
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                devices.add(device);
+                Log.d(TAG, "onReceive: " + device.getName() + ": " + device.getAddress());
+                deviceListAdapter = new DeviceListAdapter(context, R.layout.device_adapter_view, devices);
+                deviceList.setAdapter(deviceListAdapter);
+            }
+        }
+    };
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -81,6 +108,7 @@ public class MainActivity extends AppCompatActivity {
 
         Button onOffButton = findViewById(R.id.onOffButton);
         Button discoverable = findViewById(R.id.discover);
+        deviceList = findViewById(R.id.device_list);
 
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
@@ -122,5 +150,39 @@ public class MainActivity extends AppCompatActivity {
 
         IntentFilter intentFilter = new IntentFilter(bluetoothAdapter.ACTION_SCAN_MODE_CHANGED);
         registerReceiver(broadcastReceiverSec, intentFilter);
+    }
+
+    public void btnDiscover(View view) {
+        Log.d(TAG, "Looking for devices.");
+
+        if (bluetoothAdapter.isDiscovering()) {
+            bluetoothAdapter.cancelDiscovery();
+            Log.d(TAG, "Canceling discovery");
+
+            bluetoothAdapter.startDiscovery();
+            IntentFilter discoverDevicesIntent = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+            registerReceiver(broadcastReceiverThird, discoverDevicesIntent);
+        }
+
+        if (bluetoothAdapter.isDiscovering()) {
+            checkPermissions();
+
+            bluetoothAdapter.startDiscovery();
+            IntentFilter discoverDevicesIntent = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+            registerReceiver(broadcastReceiverThird, discoverDevicesIntent);
+        }
+    }
+
+    private void checkPermissions() {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+            int permission = this.checkSelfPermission("Manifest.permission.ACCESS_FINE_LOCATION");
+            permission += this.checkSelfPermission("Manifest.permission.ACCESS_COARSE_LOCATION");
+
+            if (permission != 0) {
+                this.requestPermissions(new String[]{
+                        Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION
+                }, 1001);
+            }
+        }
     }
 }
