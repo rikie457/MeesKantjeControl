@@ -1,6 +1,6 @@
 package mk.meeskantje.meeskantjecontrol.model;
 
-public class Drones {
+public class Drone {
     private int id, country_id;
 
     public int getId() {

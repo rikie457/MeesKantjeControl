@@ -1,6 +1,6 @@
 package mk.meeskantje.meeskantjecontrol.model;
 
-public class Coordinates {
+public class Coordinate {
     private int id, drone_id;
     private float x, y, z;
 

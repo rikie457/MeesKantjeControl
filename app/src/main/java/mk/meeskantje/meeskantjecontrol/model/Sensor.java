@@ -1,8 +1,8 @@
 package mk.meeskantje.meeskantjecontrol.model;
 
-public class Countries {
+public class Sensor {
     private int id;
-    private String name, code, description;
+    private String type, description;
 
     public int getId() {
         return id;
@@ -12,20 +12,12 @@ public class Countries {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getType() {
+        return type;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getDescription() {

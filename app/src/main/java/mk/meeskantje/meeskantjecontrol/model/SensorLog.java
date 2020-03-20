@@ -1,6 +1,6 @@
 package mk.meeskantje.meeskantjecontrol.model;
 
-public class SensorLogs {
+public class SensorLog {
     private int id, sensor_id, coordinate_id;
     private String value;
 
