@@ -32,6 +32,7 @@ public class ConnectionService {
     public ConnectionService(Context context) {
         this.context = context;
         this.mBlueToothAd = BluetoothAdapter.getDefaultAdapter();
+        start();
     }
 
     private class AcceptThread extends Thread {

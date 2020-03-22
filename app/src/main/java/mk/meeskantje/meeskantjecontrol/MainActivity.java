@@ -15,10 +15,14 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.UUID;
 
+import mk.meeskantje.meeskantjecontrol.data.bluetooth.ConnectionService;
 import mk.meeskantje.meeskantjecontrol.data.bluetooth.DeviceListAdapter;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
@@ -26,9 +30,19 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public ArrayList<BluetoothDevice> devices;
     public DeviceListAdapter deviceListAdapter;
 
-    BluetoothAdapter bluetoothAdapter;
+    private static final UUID MY_UUID_INSECURE =  UUID.fromString("8ce255c0-200a-11e0-ac64-08002000c9a66");
+
+    private BluetoothAdapter bluetoothAdapter;
+    private ConnectionService connectionService;
+
+    private BluetoothDevice mainDevice;
 
     ListView deviceList;
+    Button onOffButton;
+    Button discoverable;
+    Button startButton;
+    Button sendText;
+    EditText messageInput;
 
     private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
@@ -106,6 +120,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                 if (device.getBondState() == BluetoothDevice.BOND_BONDED) {
                     Log.d(TAG, "onReceiveFour: Bonded.");
+                    mainDevice = device;
                 }
 
                 if (device.getBondState() == BluetoothDevice.BOND_BONDING) {
@@ -133,8 +148,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button onOffButton = findViewById(R.id.onOffButton);
-        Button discoverable = findViewById(R.id.discover);
+        onOffButton = findViewById(R.id.onOffButton);
+        discoverable = findViewById(R.id.discover);
+        startButton = findViewById(R.id.start_connection);
+        sendText = findViewById(R.id.send);
+        messageInput = findViewById(R.id.message_input);
+
         devices = new ArrayList<>();
         deviceList = findViewById(R.id.device_list);
 
@@ -149,6 +168,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             @Override
             public void onClick(View view) {
                 bluetoothSwitch();
+            }
+        });
+
+        sendText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                byte[] bytes = messageInput.toString().getBytes(Charset.defaultCharset());
+                connectionService.write(bytes);
             }
         });
     }
@@ -224,6 +251,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2) {
             Log.d(TAG, "Trying to pair with " + devices.get(i).getName());
             devices.get(i).createBond();
+            mainDevice = devices.get(i);
+            connectionService = new ConnectionService(this);
         }
+    }
+
+    public void startBluetoothConnection(View view) {
+        connectionService.startClient(mainDevice, MY_UUID_INSECURE);
     }
 }
