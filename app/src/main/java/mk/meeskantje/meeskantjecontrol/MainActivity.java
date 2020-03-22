@@ -13,6 +13,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
@@ -20,9 +21,9 @@ import java.util.ArrayList;
 
 import mk.meeskantje.meeskantjecontrol.data.bluetooth.DeviceListAdapter;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
     private static final String TAG = "MainActivity";
-    public ArrayList<BluetoothDevice> devices = new ArrayList<>();
+    public ArrayList<BluetoothDevice> devices;
     public DeviceListAdapter deviceListAdapter;
 
     BluetoothAdapter bluetoothAdapter;
@@ -88,9 +89,32 @@ public class MainActivity extends AppCompatActivity {
             if (action.equals(BluetoothDevice.ACTION_FOUND)) {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 devices.add(device);
-                Log.d(TAG, "onReceive: " + device.getName() + ": " + device.getAddress());
+                Log.d(TAG, "onReceiveThird: " + device.getName() + ": " + device.getAddress());
                 deviceListAdapter = new DeviceListAdapter(context, R.layout.device_adapter_view, devices);
                 deviceList.setAdapter(deviceListAdapter);
+            }
+        }
+    };
+
+    private BroadcastReceiver broadcastReceiverFour = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final String action = intent.getAction();
+
+            if (action.equals(BluetoothDevice.ACTION_BOND_STATE_CHANGED)) {
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+
+                if (device.getBondState() == BluetoothDevice.BOND_BONDED) {
+                    Log.d(TAG, "onReceiveFour: Bonded.");
+                }
+
+                if (device.getBondState() == BluetoothDevice.BOND_BONDING) {
+                    Log.d(TAG, "onReceiveFour: Bonding.");
+                }
+
+                if (device.getBondState() == BluetoothDevice.BOND_NONE) {
+                    Log.d(TAG, "onReceiveFour: No Bond.");
+                }
             }
         }
     };
@@ -99,6 +123,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(broadcastReceiver);
+        unregisterReceiver(broadcastReceiverSec);
+        unregisterReceiver(broadcastReceiverThird);
+        unregisterReceiver(broadcastReceiverFour);
     }
 
     @Override
@@ -108,11 +135,15 @@ public class MainActivity extends AppCompatActivity {
 
         Button onOffButton = findViewById(R.id.onOffButton);
         Button discoverable = findViewById(R.id.discover);
+        devices = new ArrayList<>();
         deviceList = findViewById(R.id.device_list);
 
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
+        deviceList.setOnItemClickListener(MainActivity.this);
 
+        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
+        registerReceiver(broadcastReceiverFour, filter);
 
         onOffButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -183,6 +214,16 @@ public class MainActivity extends AppCompatActivity {
                         Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION
                 }, 1001);
             }
+        }
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        bluetoothAdapter.cancelDiscovery();
+
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            Log.d(TAG, "Trying to pair with " + devices.get(i).getName());
+            devices.get(i).createBond();
         }
     }
 }
