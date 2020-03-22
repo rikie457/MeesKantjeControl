@@ -146,7 +146,11 @@ public class ConnectionService {
             InputStream tmpIn = null;
             OutputStream tmpOut = null;
 
-            dialog.dismiss();
+            try {
+                dialog.dismiss();
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+            }
 
             try {
                 tmpIn = mmSocket.getInputStream();
