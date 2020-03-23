@@ -35,4 +35,11 @@ public class SensorLog {
     public void setValue(String value) {
         this.value = value;
     }
+
+    public SensorLog(int id, int sensor_id, int coordinate_id, String value) {
+        this.id = id;
+        this.sensor_id = sensor_id;
+        this.coordinate_id = coordinate_id;
+        this.value = value;
+    }
 }

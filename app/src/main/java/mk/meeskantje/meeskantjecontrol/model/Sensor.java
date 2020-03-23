@@ -27,4 +27,10 @@ public class Sensor {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public Sensor(int id, String type, String description) {
+        this.id = id;
+        this.type = type;
+        this.description = description;
+    }
 }

@@ -18,4 +18,9 @@ public class Drone {
     public void setCountry_id(int country_id) {
         this.country_id = country_id;
     }
+
+    public Drone(int id, int country_id) {
+        this.id = id;
+        this.country_id = country_id;
+    }
 }

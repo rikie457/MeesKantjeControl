@@ -4,6 +4,14 @@ public class Coordinate {
     private int id, drone_id;
     private float x, y, z;
 
+    public Coordinate(int id, int drone_id, float x, float y, float z) {
+        this.id = id;
+        this.drone_id = drone_id;
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
+
     public int getId() {
         return id;
     }

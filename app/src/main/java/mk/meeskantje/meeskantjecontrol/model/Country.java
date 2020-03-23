@@ -4,6 +4,13 @@ public class Country {
     private int id;
     private String name, code, description;
 
+    public Country(int id, String name, String code, String description) {
+        this.id = id;
+        this.name = name;
+        this.code = code;
+        this.description = description;
+    }
+
     public int getId() {
         return id;
     }
@@ -34,5 +41,15 @@ public class Country {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    @Override
+    public String toString() {
+        return "Country{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", code='" + code + '\'' +
+                ", description='" + description + '\'' +
+                '}';
     }
 }
