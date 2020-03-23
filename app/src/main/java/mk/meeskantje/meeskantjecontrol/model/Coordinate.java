@@ -51,4 +51,15 @@ public class Coordinate {
     public void setZ(float z) {
         this.z = z;
     }
+
+    @Override
+    public String toString() {
+        return "Coordinate{" +
+                "id=" + id +
+                ", drone_id=" + drone_id +
+                ", x=" + x +
+                ", y=" + y +
+                ", z=" + z +
+                '}';
+    }
 }

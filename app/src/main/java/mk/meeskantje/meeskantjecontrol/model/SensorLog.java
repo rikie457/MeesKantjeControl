@@ -42,4 +42,14 @@ public class SensorLog {
         this.coordinate_id = coordinate_id;
         this.value = value;
     }
+
+    @Override
+    public String toString() {
+        return "SensorLog{" +
+                "id=" + id +
+                ", sensor_id=" + sensor_id +
+                ", coordinate_id=" + coordinate_id +
+                ", value='" + value + '\'' +
+                '}';
+    }
 }

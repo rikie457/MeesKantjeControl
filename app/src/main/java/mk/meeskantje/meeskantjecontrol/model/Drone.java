@@ -23,4 +23,12 @@ public class Drone {
         this.id = id;
         this.country_id = country_id;
     }
+
+    @Override
+    public String toString() {
+        return "Drone{" +
+                "id=" + id +
+                ", country_id=" + country_id +
+                '}';
+    }
 }

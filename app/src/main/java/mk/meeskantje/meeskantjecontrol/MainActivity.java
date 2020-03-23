@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
         dataProvider.request(DataProvider.GET_COUNTRY, parametersCountry, new CountryResponse() {
             @Override
             public void response(Country data) {
-                System.out.println(data);
+                System.out.println("GET_COUNTRY " + data);
             }
 
             @Override
@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
         dataProvider.request(DataProvider.GET_COUNTRIES, null, new ArrayListResponse() {
             @Override
             public void response(ArrayList<?> data) {
-                System.out.println(data);
+                System.out.println("GET_COUNTRIES " + data);
             }
 
             @Override
@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
         dataProvider.request(DataProvider.GET_COORDINATE, parametersCoordinates, new CoordinateResponse() {
             @Override
             public void response(Coordinate data) {
-                System.out.println(data);
+                System.out.println("GET_COORDINATE " + data);
             }
 
             @Override
@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
         dataProvider.request(DataProvider.GET_COORDINATES, null, new ArrayListResponse() {
             @Override
             public void response(ArrayList<?> data) {
-                System.out.println(data);
+                System.out.println("GET_COORDINATES " + data);
             }
 
             @Override
@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
         dataProvider.request(DataProvider.GET_DRONE, parametersDrones, new DroneResponse() {
             @Override
             public void response(Drone data) {
-                System.out.println(data);
+                System.out.println("GET_DRONE " + data);
             }
 
             @Override
@@ -117,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
         dataProvider.request(DataProvider.GET_DRONES, null, new ArrayListResponse() {
             @Override
             public void response(ArrayList<?> data) {
-                System.out.println(data);
+                System.out.println("GET_DRONES " + data);
             }
 
             @Override
@@ -131,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
         dataProvider.request(DataProvider.GET_SENSOR, parametersSensor, new SensorResponse() {
             @Override
             public void response(Sensor data) {
-                System.out.println(data);
+                System.out.println("GET_SENSOR " + data);
             }
 
             @Override
@@ -143,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
         dataProvider.request(DataProvider.GET_SENSORS, null, new ArrayListResponse() {
             @Override
             public void response(ArrayList<?> data) {
-                System.out.println(data);
+                System.out.println("GET_SENSORS " + data);
             }
 
             @Override
@@ -152,30 +152,30 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        HashMap<String, String> parameterssensorLogs = new HashMap<String, String>();
-        parameterssensorLogs.put("id", "1");
-        dataProvider.request(DataProvider.GET_DRONE, parameterssensorLogs, new SensorLogResponse() {
-            @Override
-            public void response(SensorLog data) {
-                System.out.println(data);
-            }
-
-            @Override
-            public void error(VolleyError error) {
-                System.out.println(error);
-            }
-        });
-
-        dataProvider.request(DataProvider.GET_DRONES, null, new ArrayListResponse() {
-            @Override
-            public void response(ArrayList<?> data) {
-                System.out.println(data);
-            }
-
-            @Override
-            public void error(VolleyError error) {
-                System.out.println(error);
-            }
-        });
+//        HashMap<String, String> parameterssensorLogs = new HashMap<String, String>();
+//        parameterssensorLogs.put("id", "1");
+//        dataProvider.request(DataProvider.GET_SENSORLOG, parameterssensorLogs, new SensorLogResponse() {
+//            @Override
+//            public void response(SensorLog data) {
+//                System.out.println("GET_SENSORLOG " + data);
+//            }
+//
+//            @Override
+//            public void error(VolleyError error) {
+//                System.out.println(error);
+//            }
+//        });
+//
+//        dataProvider.request(DataProvider.GET_SENSORLOGS, null, new ArrayListResponse() {
+//            @Override
+//            public void response(ArrayList<?> data) {
+//                System.out.println("GET_SENSORLOGS " +data);
+//            }
+//
+//            @Override
+//            public void error(VolleyError error) {
+//                System.out.println(error);
+//            }
+//        });
     }
 }

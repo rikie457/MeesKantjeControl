@@ -33,4 +33,13 @@ public class Sensor {
         this.type = type;
         this.description = description;
     }
+
+    @Override
+    public String toString() {
+        return "Sensor{" +
+                "id=" + id +
+                ", type='" + type + '\'' +
+                ", description='" + description + '\'' +
+                '}';
+    }
 }
