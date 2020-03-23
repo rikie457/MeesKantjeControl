@@ -29,7 +29,7 @@
         android:layout_height="324dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/start_connection" />
+        app:layout_constraintTop_toBottomOf="@+id/message_input" />
 
     <Button
         android:id="@+id/discover_sec"
@@ -56,15 +56,15 @@
         android:ems="10"
         android:hint="Message"
         android:inputType="textPersonName"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/start_connection" />
 
     <Button
         android:id="@+id/send"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="send"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/message_input" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
