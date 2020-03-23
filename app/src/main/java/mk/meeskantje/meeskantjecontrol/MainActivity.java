@@ -152,30 +152,30 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-//        HashMap<String, String> parameterssensorLogs = new HashMap<String, String>();
-//        parameterssensorLogs.put("id", "1");
-//        dataProvider.request(DataProvider.GET_SENSORLOG, parameterssensorLogs, new SensorLogResponse() {
-//            @Override
-//            public void response(SensorLog data) {
-//                System.out.println("GET_SENSORLOG " + data);
-//            }
-//
-//            @Override
-//            public void error(VolleyError error) {
-//                System.out.println(error);
-//            }
-//        });
-//
-//        dataProvider.request(DataProvider.GET_SENSORLOGS, null, new ArrayListResponse() {
-//            @Override
-//            public void response(ArrayList<?> data) {
-//                System.out.println("GET_SENSORLOGS " +data);
-//            }
-//
-//            @Override
-//            public void error(VolleyError error) {
-//                System.out.println(error);
-//            }
-//        });
+        HashMap<String, String> parameterssensorLogs = new HashMap<String, String>();
+        parameterssensorLogs.put("id", "1");
+        dataProvider.request(DataProvider.GET_SENSORLOG, parameterssensorLogs, new SensorLogResponse() {
+            @Override
+            public void response(SensorLog data) {
+                System.out.println("GET_SENSORLOG " + data);
+            }
+
+            @Override
+            public void error(VolleyError error) {
+                System.out.println(error);
+            }
+        });
+
+        dataProvider.request(DataProvider.GET_SENSORLOGS, null, new ArrayListResponse() {
+            @Override
+            public void response(ArrayList<?> data) {
+                System.out.println("GET_SENSORLOGS " + data);
+            }
+
+            @Override
+            public void error(VolleyError error) {
+                System.out.println(error);
+            }
+        });
     }
 }
