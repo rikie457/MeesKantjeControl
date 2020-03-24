@@ -19,6 +19,29 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import android.Manifest;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.Build;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
+
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.UUID;
+
+import mk.meeskantje.meeskantjecontrol.data.bluetooth.ConnectionService;
+import mk.meeskantje.meeskantjecontrol.data.bluetooth.DeviceListAdapter;
+
 import mk.meeskantje.meeskantjecontrol.data.DataProvider;
 import mk.meeskantje.meeskantjecontrol.data.response.ArrayListResponse;
 import mk.meeskantje.meeskantjecontrol.data.response.CoordinateResponse;
@@ -32,12 +55,34 @@ import mk.meeskantje.meeskantjecontrol.model.Drone;
 import mk.meeskantje.meeskantjecontrol.model.Sensor;
 import mk.meeskantje.meeskantjecontrol.model.SensorLog;
 
+
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
+
     ListView deviceList;
     Button onOffButton;
     Button discoverable;
     Button startButton;
     Button sendText;
     EditText messageInput;
+
+    private DataProvider dataProvider;
+    private List<Coordinate> listCoordinate;
+    private List<Country> listCountry;
+    private List<Drone> listDrone;
+    private List<Sensor> listSensor;
+    private List<SensorLog> listSensorLog;
+
+    private static final String TAG = "MainActivity";
+    public ArrayList<BluetoothDevice> devices;
+    public DeviceListAdapter deviceListAdapter;
+
+    private static final UUID MY_UUID_INSECURE = UUID.fromString("8ce255c0-200a-11e0-ac64-08002000c9a66");
+
+    private BluetoothAdapter bluetoothAdapter;
+    private ConnectionService connectionService;
+
+    private BluetoothDevice mainDevice;
+
 
     private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
@@ -138,13 +183,6 @@ import mk.meeskantje.meeskantjecontrol.model.SensorLog;
         unregisterReceiver(broadcastReceiverFour);
     }
 
-    private DataProvider dataProvider;
-    private List<Coordinate> listCoordinate;
-    private List<Country> listCountry;
-    private List<Drone> listDrone;
-    private List<Sensor> listSensor;
-    private List<SensorLog> listSensorLog;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -158,6 +196,37 @@ import mk.meeskantje.meeskantjecontrol.model.SensorLog;
         listDrone = new ArrayList<>();
         listSensor = new ArrayList<>();
         listSensorLog = new ArrayList<>();
+
+        onOffButton = findViewById(R.id.onOffButton);
+        discoverable = findViewById(R.id.discover);
+        startButton = findViewById(R.id.start_connection);
+        sendText = findViewById(R.id.send);
+        messageInput = findViewById(R.id.message_input);
+
+        devices = new ArrayList<>();
+        deviceList = findViewById(R.id.device_list);
+
+        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
+        deviceList.setOnItemClickListener(MainActivity.this);
+
+        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
+        registerReceiver(broadcastReceiverFour, filter);
+
+        onOffButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bluetoothSwitch();
+            }
+        });
+
+        sendText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                byte[] bytes = messageInput.toString().getBytes(Charset.defaultCharset());
+                connectionService.write(bytes);
+            }
+        });
 
 
         HashMap<String, String> parametersCountry = new HashMap<String, String>();
@@ -287,37 +356,6 @@ import mk.meeskantje.meeskantjecontrol.model.SensorLog;
             @Override
             public void error(VolleyError error) {
                 System.out.println(error);
-            }
-        });
-
-        onOffButton = findViewById(R.id.onOffButton);
-        discoverable = findViewById(R.id.discover);
-        startButton = findViewById(R.id.start_connection);
-        sendText = findViewById(R.id.send);
-        messageInput = findViewById(R.id.message_input);
-
-        devices = new ArrayList<>();
-        deviceList = findViewById(R.id.device_list);
-
-        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-
-        deviceList.setOnItemClickListener(MainActivity.this);
-
-        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
-        registerReceiver(broadcastReceiverFour, filter);
-
-        onOffButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                bluetoothSwitch();
-            }
-        });
-
-        sendText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                byte[] bytes = messageInput.toString().getBytes(Charset.defaultCharset());
-                connectionService.write(bytes);
             }
         });
     }
