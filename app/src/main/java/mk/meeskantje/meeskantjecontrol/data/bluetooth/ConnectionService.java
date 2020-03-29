@@ -20,6 +20,9 @@ public class ConnectionService {
     private static final UUID MY_UUID_INSECURE =  UUID.fromString("8ce255c0-200a-11e0-ac64-08002000c9a66");
 
     private final BluetoothAdapter mBlueToothAd;
+
+    private static final String test = "test";
+
     private BluetoothDevice device;
     private UUID deviceUUID;
     private ConnectThread mConnectThread;
